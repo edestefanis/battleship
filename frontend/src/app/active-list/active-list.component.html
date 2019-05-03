@@ -1,0 +1,20 @@
+<mat-list>
+    <h3 mat-subheader>Active Games</h3>
+    <mat-list-item *ngFor="let game of games | async">
+        <div class="rival">
+          <h3>{{ game.opponentName }}</h3>
+        </div>
+        <div class="status">
+          <p>{{ game.status }}</p>
+        </div>
+        <div class="play">
+          <p>
+            <a mat-button color="primary" [routerLink]="['/game', game.gameId ]" routerLinkActive="mat-accent">
+              Play!
+            </a>
+          </p>
+        </div>
+      <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+ </mat-list>
