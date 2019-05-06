@@ -1,16 +1,12 @@
-export type Board = {
-  userId1: string;
-  userId2: string;
-  board: string;
-  unseen: string;
-}
-
 export type UserGame = {
   gameId: string;
   status: string;
   opponentName: string;
+  playerBoard: Number[][];
+  opponentBoard: Number[][];
 }
 
 export type Query = {
+  userGame: UserGame;
   userGames: UserGame[];
 }

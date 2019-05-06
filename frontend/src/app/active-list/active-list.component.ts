@@ -3,6 +3,7 @@ import { Observable } from 'rxjs'
 
 import { UserGame } from '../types'
 import { GameService } from '../game.service'
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-active-list',
@@ -12,15 +13,10 @@ import { GameService } from '../game.service'
 export class ActiveListComponent implements OnInit {
   games: Observable<UserGame[]>;
 
-  userId = "5cc8ae000e2786e8f3ab32a4"
-
-
-  constructor(public gameService: GameService) {}
+  constructor(public gameService: GameService, public userService: UserService) {}
 
   ngOnInit() {
-    console.log('holanda, preparando juegos...')
-    this.games = this.gameService.getUserGames(this.userId)
-    console.log('finished holanda')
+    this.games = this.gameService.getUserGames(this.userService.getCurrentUserId())
     console.log(this.games)
   }
 }

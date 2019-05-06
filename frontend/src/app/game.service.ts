@@ -11,9 +11,35 @@ import { Query } from './types'
 export class GameService {
   constructor(private apollo: Apollo) { }
 
+  getFullUserGame(userId: String, gameId: String) {
+    console.log('Executing getFullUserGame query!')
+    console.log(userId)
+    console.log(gameId)
+    return this.apollo.query<Query>({
+      query: gql`
+        query userGame($userId: String!, $gameId: String!) {
+          userGame(userId: $userId, gameId: $gameId) {
+            gameId
+            opponentName
+            status
+            playerBoard
+            opponentBoard
+          }
+        }
+      `,
+      variables: {
+        userId: userId,
+        gameId: gameId
+      }
+    })
+      .pipe(
+        map((result) => result.data.userGame)
+      )
+  }
+
   getUserGames(userId: String) {
     console.log('Executing getUserGames query!')
-    return this.apollo.watchQuery<Query>({
+    return this.apollo.query<Query>({
       query: gql`
         query userGames($userId: String!) {
           userGames(userId: $userId) {
@@ -27,7 +53,6 @@ export class GameService {
         userId: userId
       }
     })
-      .valueChanges
       .pipe(
         map((result) => result.data.userGames)
       )

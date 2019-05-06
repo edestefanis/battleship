@@ -1,8 +1,6 @@
 const typeDefs = [`
     type Board {
         id: ID!
-        userId1: String!
-        userId2: String!
         board: [String!]!
         unseen: [String!]!
     }
@@ -24,6 +22,8 @@ const typeDefs = [`
         gameId: ID!
         opponentName: String!
         status: String!
+        playerBoard: [[Int!]!]!
+        opponentBoard: [[Int!]!]!
     }
 
     type Query {
@@ -31,6 +31,7 @@ const typeDefs = [`
         boards: [Board!]!
         games: [Game!]!
         userGames(userId: String!): [UserGame!]!
+        userGame(userId: String!, gameId: String!): UserGame!
     }
 
     type Mutation {
