@@ -55,7 +55,7 @@ export class GameService {
     })
       .pipe(
         map((result) => result.data.userGames)
-      )
+      ).toPromise()
   }
 
   sendRocket(gameId: String, userId: String, row: Number, column: Number) {

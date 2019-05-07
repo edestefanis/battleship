@@ -64,7 +64,10 @@ const Mutation = {
         return user
     },
     deleteAllUsers: (parent, args, ctx, info) => {
-        return User.deleteMany({}).deletedCount
+        return User.deleteMany({}).exec().then((result) => result.deletedCount)
+    },
+    deleteAllGames: (parent, args, ctx, info) => {
+        return Game.deleteMany({}).exec().then((result) => result.deletedCount)
     },
     createGame: (parent, args, ctx, info) => {
         let board1 = new Board({
@@ -91,29 +94,33 @@ const Mutation = {
             })
         })
     },
-    sendRocket: (parent, args, ctx, info) => {
+    sendRocket: (parent, args, { pubsub }, info) => {
         console.log('sendRocket!')
         return Game.findById(args.gameId).then((game) => {
             let boardId;
             if (game.turnUser1) {
                 if (args.userId != game.user1) {
-                    //return 'Invalid: not your turn.'
+                    return { result: 'Invalid: not your turn.' }
                 }
                 boardId = game.board1
             } else {
                 if (args.userId != game.user2) {
-                    //return 'Invalid: not your turn.'
+                    return { result: 'Invalid: not your turn.' }
                 }
                 boardId = game.board2
             }
 
             return Board.findById(boardId).then((board) => {
+                console.log(board)
+                console.log('previous is the one we are firing')
+                console.log(args)
                 // Lets make sure the tile hasn't been already discovered.
                 if (board.unseen[args.row][args.column] != '#') {
-                    return 'Invalid: Tile has already been fired.'
+                    return { result: 'Invalid: Tile has already been fired.' }
                 }
                 // Discover the tile, save it and return the actual element.
                 board.unseen[args.row] = board.unseen[args.row].substr(0, args.column) + '.' + board.unseen[args.row].substr(args.column+1)
+                console.log(board)
                 if (game.turnUser1 === false) {
                     game.turnUser1 = true
                 } else {
@@ -123,6 +130,18 @@ const Mutation = {
                 // TODO(edestefanis): fix this, it should go under a transaction
                 board.save()
                 game.save()
+
+                // Lets publish user games & lists changes, so the subscribers get to know about this.
+                const labelUserGame1 = 'user-game-' + game.user1 + '-' + args.gameId
+                pubsub.publish(labelUserGame1, { update: 'changed' })
+                const labelUser1 = 'user-list-' + game.user1
+                pubsub.publish(labelUser1, { update: 'changed' })
+
+                const labelUserGame2 = 'user-game-' + game.user2 + '-' + args.gameId
+                pubsub.publish(labelUserGame2, { update: 'changed' })
+                const labelUser2 = 'user-list-' + game.user2
+                pubsub.publish(labelUser2, { update: 'changed' })
+
                 console.log('returning ' + board.board[args.row][args.column])
                 return { result: board.board[args.row][args.column] }
             })

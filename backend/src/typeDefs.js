@@ -42,7 +42,13 @@ const typeDefs = [`
         sendRocket(gameId: String!, userId: String!, row: Int!, column: Int!): StringResult!
         createUser(name: String!): User!
         deleteAllUsers: Int
-        createGame(userId1: ID!, userId2: ID!): Game! 
+        createGame(userId1: ID!, userId2: ID!): Game!
+        deleteAllGames: Int!
+    }
+
+    type Subscription {
+        userGame(userId: String!, gameId: String!): String!
+        userList(userId: String!): String!
     }
 `];
 

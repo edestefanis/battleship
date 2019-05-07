@@ -16,6 +16,7 @@ import {
   MatToolbarModule,
   MatDividerModule,
   MatListModule,
+  MatSelectModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActiveListComponent } from './active-list/active-list.component';
@@ -40,6 +41,7 @@ import { GameComponent } from './game/game.component';
     MatToolbarModule,
     MatDividerModule,
     MatListModule,
+    MatSelectModule,
     BrowserAnimationsModule
   ],
   providers: [],

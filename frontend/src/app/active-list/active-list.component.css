@@ -9,3 +9,15 @@
 .play {
   flex: 1;
 }
+
+.games {
+  display: flex
+}
+
+.games-list {
+  flex: 3 0 0;
+}
+
+.user-select {
+  flex: 1 0 0;
+}

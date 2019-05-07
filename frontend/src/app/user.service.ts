@@ -5,8 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class UserService {
   constructor() { }
+  userId: string;
+
+  setCurrentUserId(userId: string) {
+    this.userId = userId
+  }
 
   getCurrentUserId() {
-    return "5cc8ae000e2786e8f3ab32a4"
+    return this.userId
   }
 }
