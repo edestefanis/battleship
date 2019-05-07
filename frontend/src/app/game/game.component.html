@@ -1,30 +1,26 @@
+  <table class="is-bordered" width="500" height="500" [style.opacity] = "game.status == 'pending' ? 0.5 : 1">
+      <tr *ngFor="let row of game.playerBoard; let i = index">
+        <td *ngFor="let col of row; let j = index"
+        (click) = "onTileClick($event)"
+        [style.background-color] = "'#ff0000'"
+        [class.win] = "col == 1" [class.fail] = "col == 2"
+        class="battleship-tile" id="t{{i}}-{{j}}">{{ col == 2 ? "." : col == 1? "X": ' ' }}</td>
+    </tr>
+  </table>
 
-<table class="is-bordered" width="500" height="500" [style.opacity] = "(game | async).status == 'pending' ? 0.5 : 1">
-    <tr *ngFor="let row of (game | async).playerBoard; let i = index">
-      <td *ngFor="let col of row; let j = index"
-      (click) = "fireTorpedo($event)"
-      [style.background-color] = "'#ff0000'"
-      [class.win] = "col == 1" [class.fail] = "col == 2"
-      class="battleship-tile" id="t{{i}}-{{j}}">
-      {{ col == 2 ? "X" : col == 1? "💀": ' ' }}
-    </td>
-  </tr>
-</table>
-
-
-<table class="is-bordered" width="300" height="300" [style.opacity] = "1">
-    <tr *ngFor="let row of (game | async).opponentBoard; let i = index">
-      <td *ngFor="let col of row; let j = index"
-      [style.background-color] = "'#ffaa00'"
-      [class.win] = "col == 1" [class.fail] = "col == 2"
-      class="battleship-tile" id="t{{i}}-{{j}}">
-      {{ col == 2 ? "X" : col == 1? "💀": '#' }}
-    </td>
-  </tr>
-</table>
-<div *ngIf="(game | async).status==='pending'">
-Pending
-</div>
-<div *ngIf="(game | async).status!=='pending'">
-Play
-</div>
+  <table class="is-bordered" width="300" height="300" [style.opacity] = "1">
+      <tr *ngFor="let row of game.opponentBoard; let i = index">
+        <td *ngFor="let col of row; let j = index"
+        [style.background-color] = "'#ffaa00'"
+        [class.win] = "col == 1" [class.fail] = "col == 2"
+        class="battleship-tile" id="t{{i}}-{{j}}">
+        {{ col == 2 ? "X" : col == 1? "💀": '#' }}
+      </td>
+    </tr>
+  </table>
+  <div *ngIf="game.status==='pending'">
+  Pending
+  </div>
+  <div *ngIf="game.status!=='pending'">
+  Play
+  </div>

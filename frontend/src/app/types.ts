@@ -10,3 +10,10 @@ export type Query = {
   userGame: UserGame;
   userGames: UserGame[];
 }
+
+export type StringResult = {
+  result: string;
+}
+export type Mutation ={
+  sendRocket: StringResult;
+}

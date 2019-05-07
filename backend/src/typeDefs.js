@@ -34,7 +34,12 @@ const typeDefs = [`
         userGame(userId: String!, gameId: String!): UserGame!
     }
 
+    type StringResult {
+        result: String!
+    }
+
     type Mutation {
+        sendRocket(gameId: String!, userId: String!, row: Int!, column: Int!): StringResult!
         createUser(name: String!): User!
         deleteAllUsers: Int
         createGame(userId1: ID!, userId2: ID!): Game! 

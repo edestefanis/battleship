@@ -93,7 +93,6 @@ const Query = {
         console.log('Getting game for: ')
         console.log(args)
         return Game.findById(args.gameId).then((game) => {
-
             // Get the opponent name.
             let opponentId = game.user1
             if (game.user1 === args.userId) {
@@ -116,13 +115,15 @@ const Query = {
                 return Board.findById(boardId1).then((board1) => {
                     return Board.findById(boardId2).then((board2) => {
                         let [playerBoard,opponentBoard] = getUserBoards(board1, board2)
-                        console.log(getUserBoards(board1, board2))
+                        console.log('Final to get user board full:')
+                        console.log(status)
+                        console.log(playerBoard)
                         return {
                             gameId: args.gameId,
                             opponentName: opponent.name,
-                            status,
-                            playerBoard,
-                            opponentBoard
+                            status: status,
+                            playerBoard: playerBoard,
+                            opponentBoard: opponentBoard
                         }
                     })
                 })

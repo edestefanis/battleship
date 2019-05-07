@@ -32,7 +32,6 @@ function generateBoard() {
 
             // Choose one of the options.
             let chosenOption = Math.floor(Math.random() * freeCells.length)
-            // console.log(freeCells[chosenOption])
 
             // Lets place the ship on the board :).
             let chosenOptionRow = freeCells[chosenOption].row
@@ -42,7 +41,6 @@ function generateBoard() {
             for (let j = 0; j < shipSize; ++j) {
                 let shipRow = chosenOptionRow + j*chosenOptionDirection
                 let shipCol = chosenOptionCol + j*(1-chosenOptionDirection)
-                // console.log(chosenOptionRow + " " + chosenOptionCol)
                 board[shipRow] = board[shipRow].substr(0, shipCol) + String(shipIndex) + board[shipRow].substr(shipCol+1)
             }
             shipIndex++ 
@@ -79,7 +77,6 @@ const Mutation = {
                 unseen: generateUnseenBoard()
             })
             return board2.save().then((b2) => {
-                console.log('parte 1')
                 let game = new Game({
                     turnUser1: true,
                     user1: args.userId1,
@@ -87,12 +84,47 @@ const Mutation = {
                     board1: b1._id,
                     board2: b2._id
                 })
-                console.log(game)
 
                 return game.save().then((game) => {
-                    console.log('parte 3')
                     return game
                 })
+            })
+        })
+    },
+    sendRocket: (parent, args, ctx, info) => {
+        console.log('sendRocket!')
+        return Game.findById(args.gameId).then((game) => {
+            let boardId;
+            if (game.turnUser1) {
+                if (args.userId != game.user1) {
+                    //return 'Invalid: not your turn.'
+                }
+                boardId = game.board1
+            } else {
+                if (args.userId != game.user2) {
+                    //return 'Invalid: not your turn.'
+                }
+                boardId = game.board2
+            }
+
+            return Board.findById(boardId).then((board) => {
+                // Lets make sure the tile hasn't been already discovered.
+                if (board.unseen[args.row][args.column] != '#') {
+                    return 'Invalid: Tile has already been fired.'
+                }
+                // Discover the tile, save it and return the actual element.
+                board.unseen[args.row] = board.unseen[args.row].substr(0, args.column) + '.' + board.unseen[args.row].substr(args.column+1)
+                if (game.turnUser1 === false) {
+                    game.turnUser1 = true
+                } else {
+                    game.turnUser1 = false;
+                }
+               
+                // TODO(edestefanis): fix this, it should go under a transaction
+                board.save()
+                game.save()
+                console.log('returning ' + board.board[args.row][args.column])
+                return { result: board.board[args.row][args.column] }
             })
         })
     }

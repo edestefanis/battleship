@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { map } from 'rxjs/operators';
 
-import { Query } from './types'
+import { Query, Mutation} from './types'
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { Query } from './types'
 export class GameService {
   constructor(private apollo: Apollo) { }
 
-  getFullUserGame(userId: String, gameId: String) {
+  async getFullUserGame(userId: String, gameId: String) {
     console.log('Executing getFullUserGame query!')
     console.log(userId)
     console.log(gameId)
@@ -34,7 +34,7 @@ export class GameService {
     })
       .pipe(
         map((result) => result.data.userGame)
-      )
+      ).toPromise()
   }
 
   getUserGames(userId: String) {
@@ -56,5 +56,24 @@ export class GameService {
       .pipe(
         map((result) => result.data.userGames)
       )
+  }
+
+  sendRocket(gameId: String, userId: String, row: Number, column: Number) {
+    console.log('here we are....')
+   return this.apollo.mutate<Mutation>({
+      mutation: gql`
+        mutation sendRocket($gameId: String!, $userId: String!, $row: Int!, $column: Int!) {
+          sendRocket(gameId: $gameId, userId: $userId, row: $row, column: $column) {
+            result
+          }
+        }
+      `,
+      variables: {
+        gameId: gameId,
+        userId: userId,
+        row: row,
+        column: column
+      }
+    })
   }
 }
