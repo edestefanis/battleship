@@ -88,7 +88,11 @@ export class GameService {
         query: gql`
           subscription UserGame($userId: String!, $gameId: String!) {
             userGame(userId: $userId, gameId: $gameId) {
-              result
+              gameId
+              opponentName
+              status
+              playerBoard
+              opponentBoard
             }
           }
         `,
@@ -106,7 +110,9 @@ export class GameService {
         query: gql`
           subscription UserList($userId: String!) {
             userList(userId: $userId) {
-              result
+              gameId
+              opponentName
+              status
             }
           }
         `,

@@ -37,7 +37,9 @@ export class GameComponent implements OnInit, OnDestroy {
     try {
       this.gameSubscription = this.gameService.subscribeToGame(this.userService.getCurrentUserId(), this.gameId)
         .subscribe(({ data }) => {
-          this.loadFullUserGame()
+          console.log('delete me')
+          console.log(data.userGame)
+          this.game = data.userGame
         });
     }
     catch(error) {

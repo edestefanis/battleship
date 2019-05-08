@@ -1,26 +1,23 @@
-  <table class="is-bordered" width="500" height="500" [style.opacity] = "game.status === 'pending' ? 0.5 : 1">
-      <tr *ngFor="let row of game.playerBoard; let i = index">
-        <td *ngFor="let col of row; let j = index"
-        (click) = "onTileClick($event)"
-        [style.background-color] = "'#ff0000'"
-        [class.win] = "col == 1" [class.fail] = "col == 2"
-        class="battleship-tile" id="t{{i}}-{{j}}" width="50" height="50">{{ col == 2 ? "." : col == 1? "X": ' ' }}</td>
-    </tr>
-  </table>
 
-  <table class="is-bordered" width="300" height="300" [style.opacity] = "1">
-      <tr *ngFor="let row of game.opponentBoard; let i = index">
-        <td *ngFor="let col of row; let j = index"
-        [style.background-color] = "'#ffaa00'"
-        [class.win] = "col == 1" [class.fail] = "col == 2"
-        class="battleship-tile" id="t{{i}}-{{j}}">
-        {{ col == 2 ? "X" : col == 1? "💀": '#' }}
-      </td>
-    </tr>
-  </table>
-  <div *ngIf="game.status==='pending'">
-  Pending
-  </div>
-  <div *ngIf="game.status!=='pending'">
-  Play
-  </div>
+<h1>Your Board</h1>
+<table class="is-bordered" width="500" height="500" [style.opacity] = "game.status === 'pending' ? 0.5 : 1">
+    <tr *ngFor="let row of game.playerBoard; let i = index">
+      <td *ngFor="let col of row; let j = index"
+      (click) = "onTileClick($event)"
+      [style.background-color] = "col === 0? '#ff0000': '#ffa500'"
+      [class.win] = "col == 1" [class.fail] = "col == 2"
+      class="battleship-tile" id="t{{i}}-{{j}}" width="50" height="50">{{ col == 2 ? " " : col == 1? "X": ' ' }}</td>
+  </tr>
+</table>
+
+<h1>Opponent Board</h1>
+<table class="is-bordered" width="300" height="300" [style.opacity] = "1">
+    <tr *ngFor="let row of game.opponentBoard; let i = index">
+      <td *ngFor="let col of row; let j = index"
+      [style.background-color] = "col < 1000 ? '#ffaa00': '#ffff00'"
+      [class.win] = "col == 1" [class.fail] = "col == 2"
+      class="battleship-tile" id="t{{i}}-{{j}}">
+      {{ col % 1000 ? "X" : ' ' }}
+    </td>
+  </tr>
+</table>

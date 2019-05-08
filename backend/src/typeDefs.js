@@ -47,8 +47,8 @@ const typeDefs = [`
     }
 
     type Subscription {
-        userGame(userId: String!, gameId: String!): StringResult!
-        userList(userId: String!): StringResult!
+        userGame(userId: String!, gameId: String!): UserGame!
+        userList(userId: String!): [UserGame!]!
     }
 `];
 
