@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import { GameService } from '../game.service'
 import { ActivatedRoute } from '@angular/router'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
+
 
 import { UserGame } from '../types'
 import { UserService } from '../user.service';
@@ -11,9 +12,10 @@ import { UserService } from '../user.service';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   private gameId: String;
   game: UserGame;
+  gameSubscription: Subscription;
 
   constructor(public gameService: GameService,
               public userService: UserService,
@@ -27,31 +29,50 @@ export class GameComponent implements OnInit {
         this.gameId = paramMap.get('gameId')
       }
     })
-    console.log('fetching game')
-    this.game = await this.gameService.getFullUserGame(this.userService.getCurrentUserId(),
-                                                 this.gameId)
-    console.log(this.game)
-    console.log('after logging')
+    try {
+    this.loadFullUserGame()
+    } catch (error) {
+      console.log(error)
+    }
+    try {
+      this.gameSubscription = this.gameService.subscribeToGame(this.userService.getCurrentUserId(), this.gameId)
+        .subscribe(({ data }) => {
+          this.loadFullUserGame()
+        });
+    }
+    catch(error) {
+      console.error(error);
+    }
+  }
+
+  async ngOnDestroy() {
+    this.gameSubscription.unsubscribe()
+  }
+
+  async loadFullUserGame() {
+    try {
+      this.game = await this.gameService.getFullUserGame(
+        this.userService.getCurrentUserId(),
+        this.gameId)
+    } catch (error) {
+      console.log('Error while fetching the game: ' + this.gameId + ' for user: ' + this.userService.getCurrentUserId())
+      console.log(error)
+    }
   }
 
   async onTileClick(event: Event) {
-    console.log('tile click! :D')
     let id = (event.target as HTMLTableElement).id,
       row = parseInt(id.substring(1,2)), col = parseInt(id.substring(3,4)),
       value = (event.target as HTMLTableElement).textContent;
-    console.log(id, row, col, value)
     // Lets make sure this tile is not yet discovered, and then send fire :)
     if (value !== ' ') {
       // TODO(edestefanis): warn something, the tile is already discovered.
     } else {
-      console.log('sendRocket!')
-
       // Lets send a request to the backend! :D
       this.gameService.sendRocket(
         this.gameId, this.userService.getCurrentUserId(), row, col)
         .subscribe(
           ({data}) => {
-            console.log(data.sendRocket.result)
             if (data.sendRocket.result.length === 1) {
               if (data.sendRocket.result === '.') {
                 this.game.playerBoard[row][col] = 2

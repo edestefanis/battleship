@@ -33,6 +33,11 @@ mongoose.connect('mongodb+srv://sony:FvCxfjmAG37v7zUx@cluster0-jw9nq.mongodb.net
     console.log('Connection failed!');
   });
 
+
+// Enable to see mongoose debug info in the logs.
+mongoose.set('debug', false);
+
+
 const port = '4000'
 
 const server = new ApolloServer({

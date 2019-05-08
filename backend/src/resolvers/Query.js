@@ -12,8 +12,6 @@ function getUserBoards(board1, board2) {
     let playerBoard = new Array(10).fill(null).map(() => new Array(10).fill(0))
     let opponentBoard = new Array(10).fill(null).map(() => new Array(10).fill(0))
 
-    console.log(board1)
-    console.log(board2)
     // For the user, it can only see the 'discovered' places.
     for (let i = 0; i < 10; ++i) {
         for (let j = 0; j < 10; ++j) {
@@ -40,7 +38,7 @@ function getUserBoards(board1, board2) {
             // We use 1000 so we can get the actual value in the board by just 
             // using mod1000.
             if (board2.unseen[i][j] !== '#') {
-                opponentBoard += 1000
+                opponentBoard[i][j] += 1000
             }
         }
     }
@@ -90,8 +88,7 @@ const Query = {
             return Promise.all(results).then(() => {return userGames})
         })
     }, userGame: (parent, args, ctx, info) => {
-        console.log('Getting game for: ')
-        console.log(args)
+        console.log('Getting game for arguments: ' + args)
         return Game.findById(args.gameId).then((game) => {
             // Get the opponent name.
             let opponentId = game.user1
@@ -115,9 +112,6 @@ const Query = {
                 return Board.findById(boardId1).then((board1) => {
                     return Board.findById(boardId2).then((board2) => {
                         let [playerBoard,opponentBoard] = getUserBoards(board1, board2)
-                        console.log('Final to get user board full:')
-                        console.log(status)
-                        console.log(playerBoard)
                         return {
                             gameId: args.gameId,
                             opponentName: opponent.name,

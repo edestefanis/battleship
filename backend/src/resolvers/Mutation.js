@@ -128,22 +128,29 @@ const Mutation = {
                 }
                
                 // TODO(edestefanis): fix this, it should go under a transaction
-                board.save()
-                game.save()
+                board.markModified('unseen')
+                return board.save().then((board) => {
+                    console.log(board)
+                    if (board._id != boardId) console.log("IMPOSSIBLE\n\n\n\n\n\n\n\nIIIIIII\n\n\n\n")
+                    console.log('Saving board ' + boardId + ' was successful!')
+                    return game.save().then(() => {
+                        console.log('Saving game ' + args.gameId + ' was successful!')
+                        // Lets publish user games & lists changes, so the subscribers get to know about this.
+                        const labelUserGame1 = 'user-game-' + game.user1 + '-' + args.gameId
+                        pubsub.publish(labelUserGame1, {userGame: { result: 'changed' }})
+                        const labelUser1 = 'user-list-' + game.user1
+                        pubsub.publish(labelUser1, {userGame: { result: 'changed' }})
 
-                // Lets publish user games & lists changes, so the subscribers get to know about this.
-                const labelUserGame1 = 'user-game-' + game.user1 + '-' + args.gameId
-                pubsub.publish(labelUserGame1, { update: 'changed' })
-                const labelUser1 = 'user-list-' + game.user1
-                pubsub.publish(labelUser1, { update: 'changed' })
+                        const labelUserGame2 = 'user-game-' + game.user2 + '-' + args.gameId
+                        pubsub.publish(labelUserGame2, {userGame: { result: 'changed' }})
+                        const labelUser2 = 'user-list-' + game.user2
+                        pubsub.publish(labelUser2, {userGame: { result: 'changed' }})
 
-                const labelUserGame2 = 'user-game-' + game.user2 + '-' + args.gameId
-                pubsub.publish(labelUserGame2, { update: 'changed' })
-                const labelUser2 = 'user-list-' + game.user2
-                pubsub.publish(labelUser2, { update: 'changed' })
 
-                console.log('returning ' + board.board[args.row][args.column])
-                return { result: board.board[args.row][args.column] }
+                        console.log('returning ' + board.board[args.row][args.column])
+                        return { result: board.board[args.row][args.column] }
+                    })
+                })
             })
         })
     }

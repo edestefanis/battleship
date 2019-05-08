@@ -27,6 +27,7 @@ export class GameService {
           }
         }
       `,
+      fetchPolicy: 'no-cache',
       variables: {
         userId: userId,
         gameId: gameId
@@ -49,6 +50,7 @@ export class GameService {
           }
         }
       `,
+      fetchPolicy: 'no-cache',
       variables: {
         userId: userId
       }
@@ -75,5 +77,42 @@ export class GameService {
         column: column
       }
     })
+  }
+
+
+  subscribeToGame(userId: String, gameId: String) {
+    console.log(userId)
+    console.log(gameId)
+
+    return this.apollo.subscribe({
+        query: gql`
+          subscription UserGame($userId: String!, $gameId: String!) {
+            userGame(userId: $userId, gameId: $gameId) {
+              result
+            }
+          }
+        `,
+        variables: {
+          userId: userId,
+          gameId: gameId
+        }
+      })
+  }
+
+  subscribeToUserList(userId: String) {
+    console.log(userId)
+
+    return this.apollo.subscribe({
+        query: gql`
+          subscription UserList($userId: String!) {
+            userList(userId: $userId) {
+              result
+            }
+          }
+        `,
+        variables: {
+          userId: userId,
+        }
+      })
   }
 }

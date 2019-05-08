@@ -17,3 +17,9 @@ export type StringResult = {
 export type Mutation ={
   sendRocket: StringResult;
 }
+
+// TODO(edestefanis): this should probably go in a different file.
+export interface User {
+  name: string;
+  userId: string;
+}

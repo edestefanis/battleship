@@ -8,6 +8,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
+import { GraphQLConfigModule } from './apollo.config';
 
 
 import {
@@ -42,18 +43,15 @@ import { GameComponent } from './game/game.component';
     MatDividerModule,
     MatListModule,
     MatSelectModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    GraphQLConfigModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
 
 export class AppModule {
-  constructor(apollo: Apollo, httpLink: HttpLink) {
-    apollo.create({
-      link: httpLink.create({ uri: 'http://localhost:4000/graphql'}),
-      cache: new InMemoryCache()
+  constructor(public apollo: Apollo, httpLink: HttpLink) {
 
-    });
   }
 }
