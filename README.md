@@ -5,7 +5,10 @@ A very simple battleship in order to look at different js/ts technologies.
 ## Getting Started
 
 The backend is basically a nodeJs server with express (not used much in this case) and a
-model handled by GraphQL.
+model handled by GraphQL. Data is stored in the non-structured MongoDB.
+
+For simplicity reasons, I have set a MongoDB Atlas DB with full access for everyone/everywhere
+(instead of managing an IP whitelist) so anyone can start this project locally and communicate with it.
 
 The frontend is an Angular app using some material design components. Really poor UI interface right now, 
 I may spend some time in the future improving it, just for personal growth.
