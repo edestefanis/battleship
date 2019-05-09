@@ -2,12 +2,26 @@ import Board from '../../models/board'
 import User from '../../models/user'
 import Game from '../../models/game'
 
+
+/**
+ * Given a pair of Boards corresponding to a player (board1) and its opponent (board2)
+ * this function returns a list of boards that can be shown externally (depending on the
+ * current game state).
+ * 
+ * For the player's Board, unseen cells are returned with 0, while seen/visited cells are
+ * returned with 2 (for non-ship cells) or 1 (for ship cells). 
+ *  
+ * @param {Board} board1: the player Board.
+ * @param {Board} board2: the opponent Board.
+ * @returns {Array[]}: returns an array of boards with enough information for the client
+ *                     to display the current state of the game.
+ */
 function getUserBoards(board1, board2) {
     // We assume 10x10 boards.
     let playerBoard = new Array(10).fill(null).map(() => new Array(10).fill(0))
     let opponentBoard = new Array(10).fill(null).map(() => new Array(10).fill(0))
 
-    // For the user, it can only see the 'discovered' places.
+    // For the user, it can only see the 'discovered' cells.
     for (let i = 0; i < 10; ++i) {
         for (let j = 0; j < 10; ++j) {
             if (board1.unseen[i][j] !== '#') {
@@ -41,8 +55,15 @@ function getUserBoards(board1, board2) {
 }
 
 
+/**
+ * Given a user and a game, it returns the view of the game state containing information like
+ * opponent name, boards views, status ('pending' vs 'play').
+ *  
+ * @param {String} userId: The user ID of the game being fetched.
+ * @param {String} gameId: The game ID of the game being fetched.
+ * @returns {UserGame}: a view of the current game state.
+ */
 export function getFullUserGame(userId, gameId) {
-    console.log('Getting game for userId: ' + userId + ' and gameId: ' + gameId)
     return Game.findById(gameId).then((game) => {
         // Get the opponent name.
         let opponentId = game.user1
@@ -79,6 +100,12 @@ export function getFullUserGame(userId, gameId) {
     })
 }
 
+
+/**
+ * Given a user ID, returns the list of active games this player currently has.
+ *  
+ * @param {String} userId: The id of the user we are fetching the list of active games.
+ */
 export function getUserList(userId) {    
     return Game.find({
         $or: [
@@ -114,6 +141,16 @@ export function getUserList(userId) {
 }
 
 
+/**
+ * Generates a random board with '.' in cells with no ships, and numbers where there are ships,
+ * using the following numbers:
+ * 1: 4 contiguous cells representing a ship of length 4.
+ * 2, 3: two ships of 3 contiguous cells.
+ * 4, 5, 6: three ships, each consisting of 2 contiguous cells representing ships of length 2.
+ * 7, 8, 9, 10: 4 single cell ships.
+ * 
+ * Returns an array of strings, representing the mentioned Board.
+ */
 export function generateBoard() {
     let board = new Array()
     for (let i = 0; i < 10; ++i) {
@@ -161,6 +198,10 @@ export function generateBoard() {
     return board
 }
 
+
+/**
+ * Returns an array of strings representing unseen/unvisited cells (each using character '#').
+ */
 export function generateUnseenBoard() {
     let unseenBoard = new Array()
     for (let i = 0; i < 10; ++i) {

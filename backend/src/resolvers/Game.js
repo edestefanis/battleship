@@ -1,6 +1,7 @@
 import Board from '../../models/board'
 import User from '../../models/user'
 
+
 const Game = {
     user1(parent, args, ctx, info) {
         console.log('lalo')
